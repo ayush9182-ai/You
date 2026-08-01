@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>For My Universe ❤️ | Priyanshi</title>
+  
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      background: radial-gradient(circle at center, #2a0845, #11051d, #000000);
+      background-size: 200% 200%;
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .app-box {
+      width: 100%;
+      max-width: 420px;
+      height: 100dvh;
+      background: rgba(20, 10, 30, 0.7);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow-y: auto;
+      box-shadow: 0 0 40px rgba(255, 45, 117, 0.2);
+    }
+
+    @media (min-width: 480px) {
+      .app-box { height: 820px; border-radius: 32px; box-shadow: 0 25px 60px rgba(0,0,0,0.8); }
+    }
+
+    .screen {
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      min-height: 100%;
+      padding: 30px 22px 25px 22px;
+      text-align: center;
+      animation: fadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .screen.active { display: flex; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.97) translateY(8px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .badge {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 2.5px;
+      color: #ffd700;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .title {
+      font-size: 23px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 30%, #ff8da1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 22px;
+      padding: 20px;
+      width: 100%;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-main {
+      background: linear-gradient(135deg, #ff2d75, #9c27b0);
+      color: white;
+      border: none;
+      padding: 16px;
+      font-size: 15px;
+      font-weight: 700;
+      border-radius: 50px;
+      width: 100%;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(255, 45, 117, 0.4);
+      z-index: 100;
+      margin-top: 10px;
+      transition: transform 0.2s;
+    }
+    .btn-main:active { transform: scale(0.96); }
+
+    .btn-sub {
+      background: rgba(255, 255, 255, 0.06);
+      color: #ccc;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 50px;
+      width: 100%;
+      cursor: pointer;
+      z-index: 100;
+      margin-top: 8px;
+    }
+
+    .btn-row { display: flex; gap: 10px; width: 100%; margin-top: 10px; }
+
+    .arena {
+      width: 100%;
+      height: 200px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 2px dashed rgba(255, 45, 117, 0.5);
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+      margin: 8px 0;
+    }
+
+    .target-obj {
+      position: absolute;
+      font-size: 32px;
+      cursor: pointer;
+      z-index: 50;
+      filter: drop-shadow(0 0 12px rgba(255, 45, 117, 0.8));
+    }
+
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; height: 200px; margin: 8px 0; }
+    .grid-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 26px; cursor: pointer; transition: all 0.2s; }
+
+    .card-3d-wrapper { 
+      width: 100%; 
+      height: 220px; 
+      perspective: 1500px; 
+      margin: 8px 0; 
+    }
+    .card-3d-inner { 
+      width: 100%; 
+      height: 100%; 
+      position: relative; 
+      transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+      transform-style: preserve-3d; 
+      cursor: pointer; 
+    }
+    .card-3d-wrapper.flipped .card-3d-inner { 
+      transform: rotateY(180deg); 
+    }
+    .card-face { 
+      width: 100%; 
+      height: 100%; 
+      position: absolute; 
+      backface-visibility: hidden; 
+      border-radius: 20px; 
+      overflow: hidden; 
+      box-shadow: 0 15px 35px rgba(0,0,0,0.6); 
+      border: 2px solid rgba(255, 215, 0, 0.4); 
+    }
+    .card-face img { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover; 
+      display: block; 
+    }
+    .card-back-face { 
+      transform: rotateY(180deg); 
+    }
+
+    .gif-box {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      overflow: hidden;
+      margin: 0 auto;
+      border: 2px solid rgba(255, 45, 117, 0.6);
+      box-shadow: 0 0 25px rgba(255, 45, 117, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.05);
+    }
+    .gif-box img { width: 100%; height: 100%; object-fit: cover; }
+
+    .time-box { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); padding: 10px; border-radius: 14px; flex: 1; text-align: center; }
+    .t-num { font-size: 20px; font-weight: 800; color: #ffd700; }
+    .t-lbl { font-size: 9px; color: #aaa; text-transform: uppercase; margin-top: 2px; }
+
+    #toast {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      background: rgba(255, 45, 117, 0.95);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      z-index: 1000;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      pointer-events: none;
+      text-align: center;
+      width: 90%;
+      max-width: 360px;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+  <div id="toast">Notification Message</div>
+
+  <!-- Local Folder Audio Files Linked Here -->
+  <audio id="loveSong" loop src="song1.mp3"></audio>
+  <audio id="winSound" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
+
+  <div class="app-box">
+
+    <!-- 1. GREETING -->
+    <div class="screen active" id="s1">
+      <div>
+        <p class="badge">SPECIAL DEDICATION ✨</p>
+        <h1 class="title">Hello My cutie, Priyanshi ❤️</h1>
+      </div>
+
+      <div class="gif-box">
+        <img src="https://media.tenor.com/KNiXTCA36YYAAAAi/bubu-dudu-sseeyall.gif" alt="Greeting GIF">
+      </div>
+
+      <div class="card">
+        <p style="font-size: 14px; font-weight: 700; color: #ffd700;">A Special Welcome for You</p>
+        <p style="font-size: 13px; color: #ccc; margin-top: 6px;">Maine yeh chota sa digital surprise sirf aur sirf aapke liye banaya hai. Let's start this journey together! 🌸</p>
+      </div>
+
+      <button class="btn-main" onclick="playLoveMusic(); goTo('s2');">Aage Chalo ➔</button>
+    </div>
+
+    <!-- 2. GIRLFRIEND DAY WISHES -->
+    <div class="screen" id="s2">
+      <div>
+        <p class="badge">1ST AUGUST SPECIAL 🌹</p>
+        <h1 class="title" style="font-size: 21px;">Happy mahila mittar diwas Priyanshi!</h1>
+      </div>
+
+      <div class="gif-box" style="width: 95px; height: 95px;">
+        <img src="https://media1.tenor.com/m/kOfhJ6VeBIsAAAAC/dudu-bubu.gif" alt="Love GIF">
+      </div>
+
+      <div class="card" style="text-align: left; display: flex; flex-direction: column; gap: 8px;">
+        <p style="font-size: 12.5px; color: #ddd;">🌸 <b>since 2023</b> thank you meri life me aane ke liye.</p>
+        <p style="font-size: 12.5px; color: #ddd;">🥺 please mujhse dur mat jana</p>
+        <p style="font-size: 12.5px; color: #ddd;">♾️ Mai sirf aur sirf Priyanshi ka hu, forever & always!</p>
+      </div>
+
+      <button class="btn-main" onclick="goTo('s3')">Next Message ➔</button>
+    </div>
+
+    <!-- 3. POLITE MESSAGES -->
+    <div class="screen" id="s3">
+      <div>
+        <p class="badge">FROM THE HEART 💌</p>
+        <h1 class="title">A Few Words For You</h1>
+      </div>
+
+      <div class="card" style="text-align: left; line-height: 1.6; font-size: 13.5px;">
+        <p style="margin-bottom: 8px;">"Priyanshi, tum meri life ki woh khushi ho jise main kabhi khona nahi chahta."</p>
+        <p style="color: #ffd700;">"Chahe halat kaise bhi ho, mera pyaar tumhare liye kabhi kam nahi hoga. You mean everything to me."</p>
+      </div>
+
+      <div style="font-size: 45px;">🧸</div>
+
+      <button class="btn-main" onclick="goTo('s4')">Aage Badho ➔</button>
+    </div>
+
+    <!-- 4. GAME PROMPT -->
+    <div class="screen" id="s4">
+      <div>
+        <p class="badge">SECRET SURPRISE 🎁</p>
+        <h1 class="title">Gift Unlock Karna Hai?</h1>
+      </div>
+
+      <div class="gif-box">
+        <img src="https://media1.tenor.com/m/uJ-JeMCce2oAAAAC/gift-present.gif" alt="Gift GIF">
+      </div>
+
+      <div class="card">
+        <p style="font-size: 14px; font-weight: 700; color: #ffd700;">Chote Se Games Khelo!</p>
+        <p style="font-size: 13px; color: #ccc; margin-top: 6px;">Apna special <b>Relationship License Gift</b> unlock karne ke liye aapko yeh 6 chote aur mazedaar games cross karne honge. Ready!</p>
+      </div>
+
+      <button class="btn-main" onclick="goTo('g1'); runG1();">Games Start Karo 🎮</button>
+    </div>
+
+    <!-- GAME 1 -->
+    <div class="screen" id="g1">
+      <div>
+        <p class="badge">GAME 1 OF 6</p>
+        <h1 class="title" style="font-size: 21px;">Heart Catcher 💖</h1>
+      </div>
+      <div style="width: 100%; display: flex; justify-content: space-between; font-weight: bold; font-size: 13px;">
+        <span>Score: <span id="score1" style="color: #ff2d75;">0</span>/8</span>
+        <span style="color: #aaa;">Tap 8 Hearts!</span>
+      </div>
+      <div class="arena" id="arena1"></div>
+      <button class="btn-sub" onclick="skipG(1)">Auto-Win Game 1 🪄</button>
+    </div>
+
+    <!-- GAME 2 -->
+    <div class="screen" id="g2">
+      <div>
+        <p class="badge">GAME 2 OF 6</p>
+        <h1 class="title" style="font-size: 21px;">Memory Matrix 🧩</h1>
+      </div>
+      <div class="grid" id="grid2"></div>
+      <button class="btn-sub" onclick="skipG(2)">Auto-Win Game 2 🪄</button>
+    </div>
+
+    <!-- GAME 3 -->
+    <div class="screen" id="g3">
+      <div>
+        <p class="badge">GAME 3 OF 6</p>
+        <h1 class="title" style="font-size: 21px;">Love Quiz ❓</h1>
+      </div>
+      <div class="card">
+        <p style="font-weight: 700; margin-bottom: 12px; font-size: 13.5px; color: #ffd700;">Mera din mast kab jata hai?</p>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <button class="btn-sub" style="margin:0; color:#fff;" onclick="checkQuiz(false)">Game khelne ke baad 🎮</button>
+          <button class="btn-sub" style="margin:0; color:#fff;" onclick="checkQuiz(true)">Jab Priyanshi ka msg aata hai 💌</button>
+          <button class="btn-sub" style="margin:0; color:#fff;" onclick="checkQuiz(false)">Jab mera favourite khana banta hai 🍲</button>
+        </div>
+      </div>
+      <button class="btn-sub" onclick="skipG(3)">Auto-Win Game 3 🪄</button>
+    </div>
+
+    <!-- GAME 4 -->
+    <div class="screen" id="g4">
+      <div>
+        <p class="badge">GAME 4 OF 6</p>
+        <h1 class="title" style="font-size: 21px;">Bubble Pop 🎈</h1>
+      </div>
+      <div style="width: 100%; display: flex; justify-content: space-between; font-weight: bold; font-size: 13px;">
+        <span>Pops: <span id="score4" style="color: #ff2d75;">0</span>/6</span>
+        <span style="color: #aaa;">Pop 6 Bubbles!</span>
+      </div>
+      <div class="arena" id="arena4"></div>
+      <button class="btn-sub" onclick="skipG(4)">Auto-Win Game 4 🪄</button>
+    </div>
+
+    <!-- GAME 5 -->
+    <div class="screen" id="g5">
+      <div>
+        <p class="badge">GAME 5 OF 6</p>
+        <h1 class="title" style="font-size: 21px;">Fast Tapper ⚡</h1>
+      </div>
+      <div class="card" style="text-align: center;">
+        <p style="font-size: 13px; color: #ccc; margin-bottom: 12px;">Heart ko jaldi-jaldi 10 baar tap karo!</p>
+        <div id="tapHeartBtn" onclick="tapGame()" style="font-size: 65px; cursor: pointer; display: inline-block; transition: transform 0.1s;">🤍</div>
+        <p style="font-size: 12px; color: #ffd700; margin-top: 10px;">Taps: <span id="tapCount">0</span>/10</p>
+      </div>
+      <button class="btn-sub" onclick="skipG(5)">Auto-Win Game 5 🪄</button>
+    </div>
+
+    <!-- GAME 6 -->
+    <div class="screen" id="g6">
+      <div>
+        <p class="badge">GAME 6 OF 6</p>
+        <h1 class="title" style="font-size: 21px;">Passcode Vault 🔒</h1>
+      </div>
+      <div class="card">
+        <p style="font-size: 12.5px; color: #ffd700; font-weight: 700; margin-bottom: 8px;">25 May 2026 ko kya hua tha?</p>
+        <input type="text" id="passInput" placeholder="Apna answer yaha type karo..." style="width:100%; padding:14px; border-radius:14px; border:1px solid rgba(255,215,0,0.3); background:rgba(0,0,0,0.3); color:#fff; font-size:13px;">
+        <button class="btn-main" style="margin-top: 12px;" onclick="checkVaultPass()">Unlock License 🔓</button>
+      </div>
+      <button class="btn-sub" onclick="skipG(6)">Bypass Vault 🪄</button>
+    </div>
+
+    <!-- 5. LICENSE CARD -->
+    <div class="screen" id="licenseScreen">
+      <div>
+        <p class="badge">CONGRATULATIONS 🎉</p>
+        <h1 class="title" style="font-size: 20px;">Relationship License Card</h1>
+      </div>
+
+      <p style="font-size: 11px; color: #ffd700; margin: 2px 0;">(Tap card to flip Front / Back)</p>
+
+      <div class="card-3d-wrapper" onclick="this.classList.toggle('flipped')">
+        <div class="card-3d-inner">
+          <div class="card-face"><img src="60939.png" alt="Front ID"></div>
+          <div class="card-face card-back-face"><img src="60938.png" alt="Back ID"></div>
+        </div>
+      </div>
+
+      <button class="btn-main" onclick="goTo('countdownScreen')">Aage Dekho ➔</button>
+    </div>
+
+    <!-- 6. COUNTDOWN -->
+    <div class="screen" id="countdownScreen">
+      <div>
+        <p class="badge">SPECIAL COUNTDOWN 🎂</p>
+        <h1 class="title" style="font-size: 21px;">20 September Birthday</h1>
+      </div>
+
+      <div style="display: flex; gap: 8px; width: 100%; margin: 5px 0;">
+        <div class="time-box"><div class="t-num" id="cd-d">00</div><div class="t-lbl">Days</div></div>
+        <div class="time-box"><div class="t-num" id="cd-h">00</div><div class="t-lbl">Hrs</div></div>
+        <div class="time-box"><div class="t-num" id="cd-m">00</div><div class="t-lbl">Mins</div></div>
+        <div class="time-box"><div class="t-num" id="cd-s">00</div><div class="t-lbl">Secs</div></div>
+      </div>
+
+      <div class="card" style="text-align: left;">
+        <p style="font-size: 13.5px; color: #ffd700; font-weight: 700; margin-bottom: 6px;">Advance me Happy Birthday! ✨</p>
+        <p style="font-size: 12.5px; color: #ddd; line-height: 1.5;">Tere birthday ke liye ek surprise plan kar raha hu, pata nhi vo pura ho payega ya nhi but I will try and I hope tujhe vo accha lage 🎂💝</p>
+      </div>
+
+      <!-- Aage chalo button clicking plays song1.mp3 or ensures it is playing -->
+      <button class="btn-main" onclick="playLoveMusic(); goTo('emotionalScreen');">Aage Chalo ➔</button>
+    </div>
+
+    <!-- 7. EMOTIONAL -->
+    <div class="screen" id="emotionalScreen">
+      <div>
+        <p class="badge">DIL KI BAAT 💔</p>
+        <h1 class="title" style="font-size: 21px;">Priyanshi...</h1>
+      </div>
+
+      <div class="card" style="text-align: left; line-height: 1.5; font-size: 13px;">
+        <p style="margin-bottom: 6px;">Yrr kitne din ho gaye teri smile nhi dekhi... or tu ab sahi se baat bhi nhi karti.</p>
+        <p style="margin-bottom: 6px;">Kuch hua hai kya? Mujhe aesa lag raha hai tu mujhse dur ja rahi hai.</p>
+        <p style="color: #ffd700; font-weight: 700;">Aesa hai kya?</p>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-main" style="background: linear-gradient(135deg, #2ecc71, #27ae60); margin-top:0;" onclick="playLoveMusic(); goTo('ansNoScreen');">Nahi! ❌</button>
+        <button class="btn-main" style="background: linear-gradient(135deg, #e74c3c, #c0392b); margin-top:0;" onclick="playLoveMusic(); goTo('ansYesScreen');">Haan... 🥺</button>
+      </div>
+    </div>
+
+    <!-- 8. ANSWER NO -->
+    <div class="screen" id="ansNoScreen">
+      <div>
+        <p class="badge">❤️</p>
+        <h1 class="title" style="font-size: 26px;">I love you so much</h1>
+      </div>
+
+      <div class="gif-box" style="width: 120px; height: 120px;">
+        <img src="https://media1.tenor.com/m/0MxdM593P9gAAAAC/hugs-love.gif" alt="Cute Hug GIF">
+      </div>
+
+      <div class="card">
+        <p style="margin: 0; color: #fff; font-weight: 600; font-size: 13.5px; line-height: 1.6;">Sahi me Aesa hona bhi nhi chahiye, or please mujhse dur mat jana I really love you so much</p>
+      </div>
+
+      <button class="btn-main" onclick="playLoveMusic(); goTo('s1');">Replay Experience 🔄</button>
+    </div>
+
+    <!-- 9. ANSWER YES -->
+    <div class="screen" id="ansYesScreen">
+      <div>
+        <p class="badge">HEARTBROKEN 🥀</p>
+        <h1 class="title" style="font-size: 32px;">🥀</h1>
+      </div>
+
+      <div class="card" style="margin-top: 20px;">
+        <p style="margin: 0; color: #fff; font-weight: 600; font-size: 14px; line-height: 1.6;">Accha koi baat nhi... but I will always love you </p>
+      </div>
+
+      <div style="font-size: 60px; margin-top: 20px;">💔</div>
+
+      <button class="btn-main" onclick="playLoveMusic(); goTo('s1');">Replay Experience 🔄</button>
+    </div>
+
+  </div>
+  <script>
+    function playLoveMusic() {
+      var love = document.getElementById('loveSong');
+      love.play().then(function() {
+        console.log("song1.mp3 playing successfully!");
+      }).catch(function(e){ 
+        console.log("Audio play blocked or file not found", e); 
+      });
+    }
+
+    function playWinSound() {
+      var win = document.getElementById('winSound');
+      win.currentTime = 0;
+      win.play().catch(function(e){});
+    }
+
+    function showToast(msg) {
+      var t = document.getElementById('toast');
+      t.innerText = msg;
+      t.classList.add('show');
+      setTimeout(function() {
+        t.classList.remove('show');
+      }, 3000);
+    }
+
+    function goTo(id) {
+      var allScreens = document.querySelectorAll('.screen');
+      for(var i=0; i<allScreens.length; i++) {
+        allScreens[i].classList.remove('active');
+      }
+      var targetScreen = document.getElementById(id);
+      if(targetScreen) {
+        targetScreen.classList.add('active');
+      }
+      var container = document.querySelector('.app-box');
+      if(container) container.scrollTop = 0;
+    }
+
+    function skipG(num) {
+      playWinSound();
+      if(num === 1) { goTo('g2'); runG2(); }
+      else if(num === 2) { goTo('g3'); }
+      else if(num === 3) { goTo('g4'); runG4(); }
+      else if(num === 4) { goTo('g5'); }
+      else if(num === 5) { goTo('g6'); }
+      else if(num === 6) { goTo('licenseScreen'); }
+    }
+
+    // GAME 1: CATCH HEARTS
+    var sc1 = 0, loop1;
+    function runG1() {
+      sc1 = 0; document.getElementById('score1').innerText = sc1;
+      var arena = document.getElementById('arena1'); arena.innerHTML = '';
+      if(loop1) clearInterval(loop1);
+      loop1 = setInterval(function(){
+        if(sc1 >= 8) { clearInterval(loop1); return; }
+        var el = document.createElement('div');
+        el.className = 'target-obj'; el.innerText = '💖';
+        el.style.left = Math.random() * (arena.clientWidth - 40) + 'px';
+        el.style.top = Math.random() * (arena.clientHeight - 40) + 'px';
+        el.onclick = function() {
+          sc1++; document.getElementById('score1').innerText = sc1; el.remove();
+          if(sc1 >= 8) { clearInterval(loop1); playWinSound(); skipG(1); }
+        };
+        arena.appendChild(el);
+        setTimeout(function(){ if(el.parentNode) el.remove(); }, 900);
+      }, 600);
+    }
+
+    // GAME 2: MEMORY MATCH
+    function runG2() {
+      var grid = document.getElementById('grid2'); grid.innerHTML = '';
+      var icons = ['🌸','✨','💜','🌸','✨','💜'];
+      icons.sort(function(){ return 0.5 - Math.random(); });
+      var flipped = [], matched = 0;
+
+      for(var i=0; i<6; i++) {
+        var card = document.createElement('div');
+        card.className = 'grid-card';
+        card.dataset.val = icons[i];
+        card.innerText = '❓';
+        card.onclick = function() {
+          if(this.innerText !== '❓' || flipped.length >= 2) return;
+          this.innerText = this.dataset.val;
+          this.style.background = 'rgba(255,45,117,0.3)';
+          flipped.push(this);
+          if(flipped.length === 2) {
+            if(flipped[0].dataset.val === flipped[1].dataset.val) {
+              matched += 2; flipped = [];
+              if(matched === 6) {
+                playWinSound();
+                setTimeout(function(){ skipG(2); }, 500);
+              }
+            } else {
+              setTimeout(function(){
+                flipped[0].innerText = '❓'; flipped[0].style.background = 'rgba(255,255,255,0.06)';
+                flipped[1].innerText = '❓'; flipped[1].style.background = 'rgba(255,255,255,0.06)';
+                flipped = [];
+              }, 700);
+            }
+          }
+        };
+        grid.appendChild(card);
+      }
+    }
+
+    // GAME 3: LOVE QUIZ HANDLER
+    function checkQuiz(isCorrect) {
+      if(isCorrect) {
+        playWinSound();
+        showToast("Sahi jawab! Aage badh rahe hain 💖");
+        skipG(3);
+      } else {
+        showToast("Arre galat! Dobara try karo 🥺");
+      }
+    }
+
+    // GAME 4: BUBBLE POP
+    var sc4 = 0, loop4;
+    function runG4() {
+      sc4 = 0; document.getElementById('score4').innerText = sc4;
+      var arena = document.getElementById('arena4'); arena.innerHTML = '';
+      if(loop4) clearInterval(loop4);
+      loop4 = setInterval(function(){
+        if(sc4 >= 6) { clearInterval(loop4); return; }
+        var el = document.createElement('div');
+        el.className = 'target-obj'; el.innerText = '🎈';
+        el.style.left = Math.random() * (arena.clientWidth - 40) + 'px';
+        el.style.top = Math.random() * (arena.clientHeight - 40) + 'px';
+        el.onclick = function() {
+          sc4++; document.getElementById('score4').innerText = sc4; el.remove();
+          if(sc4 >= 6) { clearInterval(loop4); playWinSound(); skipG(4); }
+        };
+        arena.appendChild(el);
+        setTimeout(function(){ if(el.parentNode) el.remove(); }, 1000);
+      }, 700);
+    }
+
+    // GAME 5: FAST TAPPER
+    var tapCountVal = 0;
+    function tapGame() {
+      tapCountVal++;
+      document.getElementById('tapCount').innerText = tapCountVal;
+      var btn = document.getElementById('tapHeartBtn');
+      btn.innerText = '❤️';
+      btn.style.transform = 'scale(0.85)';
+      setTimeout(function(){ btn.innerText = '🤍'; btn.style.transform = 'scale(1)'; }, 120);
+      if(tapCountVal >= 10) {
+        tapCountVal = 0;
+        document.getElementById('tapCount').innerText = '0';
+        playWinSound();
+        setTimeout(function(){ skipG(5); }, 400);
+      }
+    }
+
+    // GAME 6: PASSCODE VAULT CHECKER
+    function checkVaultPass() {
+      var val = document.getElementById('passInput').value.trim().toLowerCase();
+      if(val === 'kiss') {
+        showToast("Aree waah yaad hai! 🥰");
+        playWinSound();
+        setTimeout(function(){ skipG(6); }, 800);
+      } else {
+        showToast("Arre yaad nhi hai koi baat nhi 🌸");
+        setTimeout(function(){ skipG(6); }, 1000);
+      }
+    }
+
+    // LIVE COUNTDOWN TIMER TO SEPT 20
+    function updateCount() {
+      var now = new Date();
+      var yr = now.getFullYear();
+      var bday = new Date(yr, 8, 20);
+      if(now > bday) bday = new Date(yr + 1, 8, 20);
+      var diff = bday - now;
+      var d = Math.floor(diff / (1000 * 60 * 60 * 24));
+      var h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      var m = Math.floor((diff / 1000 / 60) % 60);
+      var s = Math.floor((diff / 1000) % 60);
+      if(document.getElementById('cd-d')) document.getElementById('cd-d').innerText = String(d).padStart(2, '0');
+      if(document.getElementById('cd-h')) document.getElementById('cd-h').innerText = String(h).padStart(2, '0');
+      if(document.getElementById('cd-m')) document.getElementById('cd-m').innerText = String(v = String(m)).padStart(2, '0'); // safety fallback
+      if(document.getElementById('cd-m')) document.getElementById('cd-m').innerText = String(m).padStart(2, '0');
+      if(document.getElementById('cd-s')) document.getElementById('cd-s').innerText = String(s).padStart(2, '0');
+    }
+    setInterval(updateCount, 1000); updateCount();
+  </script>
+</body>
+</html>
